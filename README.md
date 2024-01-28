@@ -17,7 +17,7 @@ npm install -g pnpm
 Clone the project
 
 ```bash
-git clone https://github.com/devSahinur/form-builder.git
+git clone https://github.com/devSahinur/easy-quick-form.git
 ```
 
 then navigate into the project
