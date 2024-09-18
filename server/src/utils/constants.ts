@@ -3,7 +3,10 @@ import type { CookieOptions } from 'express';
 export const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:4173',
+  'http://localhost:4400',
   'https://easyformbuilder.netlify.app',
+  'https://eqf.sobhoy.com',
+
 ];
 
 export const accessTokenExpiresIn = '1h';

@@ -10,4 +10,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    host: '0.0.0.0',  // Allows access from local network
+    port: 4400,  // Default port (you can change this if needed)
+  },
 });
