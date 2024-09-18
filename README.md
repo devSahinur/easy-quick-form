@@ -1,7 +1,7 @@
 # Easy Quick Form
 A Full Stack MERN app for building dynamic forms with drag and drop interface &amp; to track and view the responses received in the created form.
 
-https://easyquickform.netlify.app/
+https://eqf.sobhoy.com
 
 (Profile picture upload only works in local development as costs money in deployed server.)
 
