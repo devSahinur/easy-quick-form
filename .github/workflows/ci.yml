@@ -1,7 +1,7 @@
 name: CI
 
-# Type-checks and builds the workspace on every push and pull request to main,
-# so broken code is caught before it merges.
+# Lints, type-checks, tests and builds the workspace on every push and pull
+# request to main, so broken code is caught before it merges.
 
 on:
   pull_request:
@@ -10,8 +10,8 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    name: Type-check & build
+  verify:
+    name: Lint, type-check, test & build
     runs-on: ubuntu-latest
 
     steps:
@@ -37,11 +37,14 @@ jobs:
       - name: Type-check server
         run: pnpm --filter @form-builder/server exec tsc --noEmit
 
-      - name: Build client
-        run: pnpm --filter @form-builder/client build
-
-      # Lint is informational for now (remove continue-on-error once the
-      # codebase is warning-clean to make it a hard gate).
       - name: Lint client
         run: pnpm --filter @form-builder/client lint
-        continue-on-error: true
+
+      - name: Test server
+        run: pnpm --filter @form-builder/server test
+
+      - name: Test client
+        run: pnpm --filter @form-builder/client test
+
+      - name: Build client
+        run: pnpm --filter @form-builder/client build

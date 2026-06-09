@@ -6,6 +6,7 @@ import catchAsyncError from '../utils/catchAsyncError';
 import AppError from '../utils/appError';
 import { cookieOptions } from '../utils/constants';
 import { signAccessToken, signRefreshToken } from './authController';
+import { pruneRefreshTokens } from '../utils/refreshTokens';
 
 const refreshTokenHandler = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -52,7 +53,10 @@ const refreshTokenHandler = catchAsyncError(
         const accessToken = signAccessToken(foundUser._id.toString());
 
         const newRefreshToken = signRefreshToken(foundUser._id.toString());
-        foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+        foundUser.refreshToken = [
+          ...pruneRefreshTokens(newRefreshTokenArray),
+          newRefreshToken,
+        ];
         await foundUser.save();
 
         res.cookie('refreshToken', newRefreshToken, cookieOptions);

@@ -11,10 +11,16 @@ import { Button } from '../ui/Button';
 import axios from '../../lib/axios';
 import toast from 'react-hot-toast';
 import { useMutation } from '@tanstack/react-query';
+import { useCookies } from 'react-cookie';
+import { useAuth } from '../../contexts/AuthContext';
+import { getEncryptedData } from '../../utils';
+import { cookieMaxAge } from '../../utils/constants';
 
 export default function SignInButtons({ disabled }: { disabled?: boolean }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { setAuth } = useAuth();
+  const setCookie = useCookies(['userDetails'])[1];
 
   const googleMutation = useMutation({
     mutationFn: (code: string) => axios.post('/auth/google', { code }),
@@ -25,7 +31,13 @@ export default function SignInButtons({ disabled }: { disabled?: boolean }) {
     onSuccess: async ({ code }) => {
       const toastId = toast.loading('Signing you in...');
       googleMutation.mutate(code, {
-        onSuccess: () => {
+        onSuccess: res => {
+          // Persist the issued access token and user, matching the email flow.
+          setAuth({ accessToken: res.data.accessToken, ...res.data.data.user });
+          setCookie('userDetails', getEncryptedData(res.data.data.user), {
+            path: '/',
+            maxAge: cookieMaxAge,
+          });
           toast.success('Signed in successfully', { id: toastId });
           navigate(searchParams.get('callbackUrl') ?? '/', { replace: true });
         },

@@ -1,5 +1,5 @@
 import { type ErrorRequestHandler } from 'express';
-import { logEvents } from '../middleware/logger';
+import logger from '../utils/logger';
 
 export const globalErrorHandler: ErrorRequestHandler = (
   err,
@@ -11,12 +11,16 @@ export const globalErrorHandler: ErrorRequestHandler = (
   err.statusCode = isOperational ? err.statusCode || 500 : 500;
   err.status = isOperational ? err.status || 'error' : 'error';
 
-  logEvents(
-    `${message}\t${req.method}\t${req.url}\t${req.headers.origin}`,
-    'errorLog.log',
+  logger.error(
+    {
+      method: req.method,
+      url: req.url,
+      statusCode: err.statusCode,
+      // Only attach the stack for unexpected (non-operational) errors.
+      err: isOperational ? undefined : err,
+    },
+    message,
   );
-
-  if (!isOperational) console.error(err);
 
   res.status(err.statusCode).json({
     status: err.status,

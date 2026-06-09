@@ -1,49 +1,45 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import Login from './pages/auth/Login';
+import { lazy, Suspense, type ReactNode } from 'react';
 import AuthLayout from './layouts/AuthLayout';
-import Signup from './pages/auth/Signup';
-import RecoverPassword from './pages/auth/RecoverPassword';
-// import SSOLogin from './pages/auth/SSOLogin';
-import ResetPassword from './pages/auth/ResetPassword';
-import RequireAuth from './components/auth/RequireAuth';
-import CreateForm from './pages/CreateForm';
 import BaseLayout from './layouts/BaseLayout';
+import RequireAuth from './components/auth/RequireAuth';
 import PersistLogin from './components/auth/PersistLogin';
 import Error from './pages/Error';
-import Settings from './pages/Settings';
-import MyForms from './pages/MyForms';
-import UpdateForm from './pages/UpdateForm';
-import GeneratedForm from './pages/GeneratedForm';
+
+// Route components are lazy-loaded so each page ships in its own chunk
+// instead of one large bundle.
+const Login = lazy(() => import('./pages/auth/Login'));
+const Signup = lazy(() => import('./pages/auth/Signup'));
+const RecoverPassword = lazy(() => import('./pages/auth/RecoverPassword'));
+const ResetPassword = lazy(() => import('./pages/auth/ResetPassword'));
+const CreateForm = lazy(() => import('./pages/CreateForm'));
+const MyForms = lazy(() => import('./pages/MyForms'));
+const UpdateForm = lazy(() => import('./pages/UpdateForm'));
+const Settings = lazy(() => import('./pages/Settings'));
+const GeneratedForm = lazy(() => import('./pages/GeneratedForm'));
+
+function PageLoader() {
+  return (
+    <div className="flex h-screen w-full items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+    </div>
+  );
+}
+
+const lazyRoute = (node: ReactNode) => (
+  <Suspense fallback={<PageLoader />}>{node}</Suspense>
+);
 
 const router = createBrowserRouter([
   {
     element: <AuthLayout />,
     errorElement: <Error />,
     children: [
-      {
-        path: '/login',
-        element: <Login />,
-      },
-      /* {
-        path: '/sso/login',
-        element: <SSOLogin />,
-      }, */
-      {
-        path: '/signup',
-        element: <Signup />,
-      },
-      {
-        path: '/recover-password',
-        element: <RecoverPassword />,
-      },
-      {
-        path: '/reset-password/:token',
-        element: <ResetPassword />,
-      },
-      {
-        path: '/demo',
-        element: <CreateForm />,
-      },
+      { path: '/login', element: lazyRoute(<Login />) },
+      { path: '/signup', element: lazyRoute(<Signup />) },
+      { path: '/recover-password', element: lazyRoute(<RecoverPassword />) },
+      { path: '/reset-password/:token', element: lazyRoute(<ResetPassword />) },
+      { path: '/demo', element: lazyRoute(<CreateForm />) },
     ],
   },
   {
@@ -56,22 +52,13 @@ const router = createBrowserRouter([
           {
             element: <BaseLayout />,
             children: [
-              {
-                path: '/',
-                element: <CreateForm />,
-              },
-              {
-                path: '/my-forms',
-                element: <MyForms />,
-              },
+              { path: '/', element: lazyRoute(<CreateForm />) },
+              { path: '/my-forms', element: lazyRoute(<MyForms />) },
               {
                 path: '/my-forms/:id/edit',
-                element: <UpdateForm />,
+                element: lazyRoute(<UpdateForm />),
               },
-              {
-                path: '/settings',
-                element: <Settings />,
-              },
+              { path: '/settings', element: lazyRoute(<Settings />) },
             ],
           },
         ],
@@ -80,7 +67,7 @@ const router = createBrowserRouter([
   },
   {
     path: 'forms/:id',
-    element: <GeneratedForm />,
+    element: lazyRoute(<GeneratedForm />),
     errorElement: <Error />,
   },
 ]);

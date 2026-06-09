@@ -3,6 +3,7 @@ import { type Response, type Request, type NextFunction } from 'express';
 import { hash, compare } from 'bcrypt';
 import {
   forgotPasswordSchema,
+  loginSchema,
   registerSchema,
   resetPasswordSchema,
 } from '@form-builder/validation';
@@ -18,6 +19,8 @@ import {
   refreshTokenExpiresIn,
 } from '../utils/constants';
 import sendEmail from '../utils/sendEmail';
+import { env } from '../utils/env';
+import { pruneRefreshTokens } from '../utils/refreshTokens';
 
 export const signAccessToken = (id: string) =>
   sign({ id }, process.env.ACCESS_TOKEN_SECRET!, {
@@ -84,10 +87,17 @@ export const signUp = catchAsyncError(
 export const login = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     const { cookies } = req;
-    const { email, password } = req.body;
 
-    if (!email || !password)
-      return next(new AppError('Please provide email and password!', 400));
+    const result = await loginSchema.safeParseAsync(req.body);
+    if (!result.success)
+      return next(
+        new AppError(
+          'Validation failed!',
+          400,
+          result.error.flatten().fieldErrors,
+        ),
+      );
+    const { email, password } = result.data;
 
     const foundUser = await User.findOne({ email }).select('+password').exec();
     if (!foundUser || !(await compare(password, foundUser.password)))
@@ -112,7 +122,10 @@ export const login = catchAsyncError(
       res.clearCookie('refreshToken', cookieOptions);
     }
 
-    foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+    foundUser.refreshToken = [
+      ...pruneRefreshTokens(newRefreshTokenArray),
+      newRefreshToken,
+    ];
     await foundUser.save();
 
     res.cookie('refreshToken', newRefreshToken, cookieOptions);
@@ -262,21 +275,68 @@ export const resetPassword = catchAsyncError(
 
 export const googleLogin = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body.code)
+      return next(new AppError('Authorization code is required!', 400));
+
     const oAuth2Client = new OAuth2Client(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
+      env.GOOGLE_CLIENT_ID,
+      env.GOOGLE_CLIENT_SECRET,
       'postmessage',
     );
 
+    // Exchange the one-time auth code for tokens, then verify the ID token
+    // against Google to securely obtain the user's profile.
     const { tokens } = await oAuth2Client.getToken(req.body.code);
     if (!tokens.id_token)
       return next(
-        new AppError('Failed to retrieve user data from google!', 500),
+        new AppError('Failed to retrieve user data from Google!', 500),
       );
+
+    const ticket = await oAuth2Client.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    if (!payload?.email)
+      return next(new AppError('Google account has no email!', 400));
+
+    const { email, name, picture } = payload;
+
+    // Find the existing account or provision one for this Google user.
+    let user = await User.findOne({ email }).exec();
+    if (!user) {
+      const randomPassword = await hash(
+        crypto.randomBytes(32).toString('hex'),
+        12,
+      );
+      user = await User.create({
+        name: name || email.split('@')[0],
+        email,
+        password: randomPassword,
+        avatar: picture || null,
+      });
+    }
+
+    const newRefreshToken = signRefreshToken(user._id.toString());
+    user.refreshToken = [
+      ...pruneRefreshTokens(user.refreshToken),
+      newRefreshToken,
+    ];
+    await user.save();
+
+    res.cookie('refreshToken', newRefreshToken, cookieOptions);
 
     res.status(200).json({
       status: 'success',
-      data: tokens,
+      accessToken: signAccessToken(user._id.toString()),
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+        },
+      },
     });
   },
 );

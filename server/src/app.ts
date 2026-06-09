@@ -5,6 +5,8 @@ import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 
+import swaggerUi from 'swagger-ui-express';
+
 import authRouter from './routes/authRoutes';
 import userRouter from './routes/userRoutes';
 import formRouter from './routes/formRoutes';
@@ -13,9 +15,14 @@ import { globalErrorHandler } from './controllers/errorController';
 import verifyJWT from './middleware/verifyJWT';
 import { allowedOrigins } from './utils/constants';
 import credentials from './middleware/credentials';
-import logger from './middleware/logger';
+import httpLogger from './middleware/logger';
+import openapiSpec from './docs/openapi';
 
 const app: Application = express();
+
+// Interactive API docs — mounted before helmet so its CSP doesn't block the
+// Swagger UI assets.
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));
 
 // Set security HTTP headers
 app.use(
@@ -24,7 +31,7 @@ app.use(
   }),
 );
 
-app.use(logger);
+app.use(httpLogger);
 
 app.use(credentials);
 app.use(cors({ origin: allowedOrigins }));

@@ -11,6 +11,7 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
+  settings: { react: { version: 'detect' } },
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
@@ -19,5 +20,14 @@ module.exports = {
       { allowConstantExport: true },
     ],
     'no-console': 'warn',
+    // TypeScript already checks prop types, so this rule is redundant noise.
+    'react/prop-types': 'off',
+    // Allow destructuring a prop purely to exclude it from `...props`.
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { ignoreRestSiblings: true, argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
+    // Discourage `any`, but don't fail the build over it.
+    '@typescript-eslint/no-explicit-any': 'warn',
   },
 };

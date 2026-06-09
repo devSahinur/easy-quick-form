@@ -1,0 +1,49 @@
+# One-command local stack: MongoDB + API + client.
+#   docker compose up --build
+# Override secrets via a root .env file or your shell environment.
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      NODE_ENV: production
+      PORT: "8000"
+      DATABASE: mongodb://mongo:27017/easyquickform
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET:-dev-access-secret-change-me}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:-dev-refresh-secret-change-me}
+      CLIENT_URL: http://localhost:8080
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+    ports:
+      - "8000:8000"
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+      args:
+        VITE_BACKEND_BASE_URL: http://localhost:8000/api/v1
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "8080:80"
+
+volumes:
+  mongo-data:

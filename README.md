@@ -6,10 +6,6 @@
 </p>
 
 <p align="center">
-  <a href="https://eqf.sobhoy.com"><strong>Live Demo »</strong></a>
-</p>
-
-<p align="center">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg" />
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white" />
   <img alt="React" src="https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB" />
@@ -103,6 +99,29 @@ easy-quick-form/
    ```
 
    The client runs on `http://localhost:4400` and the API on `http://localhost:8000`.
+
+### With Docker
+
+Bring up the whole stack (MongoDB + API + client) with one command:
+
+```bash
+docker compose up --build
+```
+
+The client is served on `http://localhost:8080`, the API on `http://localhost:8000`.
+Override secrets (JWT, SMTP, Google) via a root `.env` file or your shell.
+
+### Testing
+
+```bash
+pnpm -F @form-builder/server test   # API/auth integration tests (Vitest + Supertest)
+pnpm -F @form-builder/client test   # component tests (Vitest + Testing Library)
+```
+
+### API documentation
+
+Interactive Swagger UI is served by the API at **`/api/docs`** (e.g.
+`http://localhost:8000/api/docs`).
 
 ### Scripts
 

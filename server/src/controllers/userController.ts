@@ -10,8 +10,7 @@ import User from '../models/userModel';
 import { compare, hash } from 'bcrypt';
 import { cookieOptions } from '../utils/constants';
 import sharp from 'sharp';
-import path from 'path';
-import fs from 'fs';
+import { saveAvatar } from '../utils/storage';
 
 /* const multerStorage = multer.diskStorage({
   destination: (_req, _file, cb) => {
@@ -37,19 +36,17 @@ export const resizeUserPhoto = catchAsyncError(
   async (req: Request, _res: Response, next: NextFunction) => {
     if (!req.file) return next();
 
-    const uploadDir = path.join(__dirname, '..', '..', 'public', 'img', 'users');
-    if (!fs.existsSync(uploadDir))
-      fs.mkdirSync(uploadDir, { recursive: true });
+    const filename = `user-${req.userId}-${Date.now()}.jpeg`;
 
-    req.file.filename = `user-${req.userId}-${Date.now()}.jpeg`;
-
-    // Await the image write so the file exists (and any error is propagated to
-    // the error handler) before the profile update runs.
-    await sharp(req.file.buffer)
+    // Normalize to a 500x500 JPEG, then persist (Cloudinary or local disk).
+    // req.file.filename holds the resulting public URL for updateProfile.
+    const buffer = await sharp(req.file.buffer)
       .resize(500, 500)
       .toFormat('jpeg')
       .jpeg({ quality: 90 })
-      .toFile(path.join(uploadDir, req.file.filename));
+      .toBuffer();
+
+    req.file.filename = await saveAvatar(buffer, filename, req);
 
     next();
   },
@@ -112,11 +109,7 @@ export const updateProfile = catchAsyncError(
       {
         name,
         email,
-        avatar: req.file
-          ? `${req.protocol}://${req.get('host')}/img/users/${
-              req.file.filename
-            }`
-          : req.body.avatar,
+        avatar: req.file ? req.file.filename : req.body.avatar,
       },
       { new: true },
     );

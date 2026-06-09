@@ -1,26 +1,26 @@
+// Import env first: it loads .env and validates the configuration before any
+// other module reads process.env.
+import { env } from './utils/env';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import app from './app';
-
-dotenv.config();
+import logger from './utils/logger';
 
 process.on('uncaughtException', err => {
-  console.log(err.name, err.message);
+  logger.fatal(err, 'Uncaught exception — shutting down');
   process.exit(1);
 });
 
 mongoose
-  .connect(process.env.DATABASE!)
-  .then(() => console.log('DB connection successful!'))
-  .catch(() => console.error('DB connection failed!'));
+  .connect(env.DATABASE)
+  .then(() => logger.info('DB connection successful!'))
+  .catch(err => logger.error(err, 'DB connection failed!'));
 
-const port = process.env.PORT || 8000;
-const server = app.listen(port, () => {
-  console.log(`Server is listening on port ${port}...`);
+const server = app.listen(env.PORT, () => {
+  logger.info(`Server is listening on port ${env.PORT}...`);
 });
 
-process.on('unhandledRejection', err => {
-  if (err instanceof Error) console.log(err.name, err.message);
+process.on('unhandledRejection', (err: unknown) => {
+  if (err instanceof Error) logger.error(err, 'Unhandled rejection — shutting down');
   server.close(() => {
     process.exit(1);
   });

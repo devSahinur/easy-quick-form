@@ -1,0 +1,13 @@
+**/node_modules
+**/dist
+.git
+.github
+**/*.log
+**/.env
+**/.env.*
+!**/.env.example
+.vercel
+coverage
+Dockerfile
+**/Dockerfile
+docker-compose.yml
