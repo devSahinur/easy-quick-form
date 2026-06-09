@@ -328,8 +328,8 @@ importers:
         specifier: 1.4.5-lts.1
         version: 1.4.5-lts.1
       nodemailer:
-        specifier: ^6.9.7
-        version: 6.9.7
+        specifier: ^8.0.10
+        version: 8.0.10
       pino:
         specifier: ^10.3.1
         version: 10.3.1
@@ -377,8 +377,8 @@ importers:
         specifier: ^20.8.7
         version: 20.8.7
       '@types/nodemailer':
-        specifier: ^6.4.13
-        version: 6.4.13
+        specifier: ^8.0.0
+        version: 8.0.0
       '@types/supertest':
         specifier: ^7.2.0
         version: 7.2.0
@@ -445,6 +445,10 @@ packages:
 
   '@babel/runtime@7.23.2':
     resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/runtime@7.29.7':
+    resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
     engines: {node: '>=6.9.0'}
 
   '@bramus/specificity@2.4.2':
@@ -1863,8 +1867,8 @@ packages:
   '@types/node@20.8.7':
     resolution: {integrity: sha512-21TKHHh3eUHIi2MloeptJWALuCu5H7HQTdTrWIFReA8ad+aggoX+lRes3ex7/FtpC+sVUpFMQ+QTfYr74mruiQ==}
 
-  '@types/nodemailer@6.4.13':
-    resolution: {integrity: sha512-889Vq/77eEpidCwh52sVWpbnqQmIwL8yVBekNbrztVEaWKOCRH3Eq6hjIJh1jwsGDEAJEH0RR+YhpH9mfELLKA==}
+  '@types/nodemailer@8.0.0':
+    resolution: {integrity: sha512-fyf8jWULsCo0d0BuoQ75i6IeoHs47qcqxWc7yUdUcV0pOZGjUTTOvwdG1PRXUDqN/8A64yQdQdnA2pZgcdi+cA==}
 
   '@types/object.omit@3.0.2':
     resolution: {integrity: sha512-BxWU36cMP+FKD3OLFluQaj2cBev2sx2LJaHELuphHwnleq+xnEhTmuYYYx4pOT/1U/ZoR6B+RdvxWh2FD6lGGA==}
@@ -3780,8 +3784,8 @@ packages:
   node-releases@2.0.13:
     resolution: {integrity: sha512-uYr7J37ae/ORWdZeQ1xxMJe3NtdmqMC/JZK+geofDrkLUApKRHPd18/TxtBOJ4A0/+uUIliorNrfYV6s1b02eQ==}
 
-  nodemailer@6.9.7:
-    resolution: {integrity: sha512-rUtR77ksqex/eZRLmQ21LKVH5nAAsVicAtAYudK7JgwenEDZ0UIQ1adUGqErz7sMkWYxWTTU1aeP2Jga6WQyJw==}
+  nodemailer@8.0.10:
+    resolution: {integrity: sha512-BLFuSth7QtHOkBzyqTehWWyub0NTRDuK2Q2SQfnGLsrJnzyU+Yeh4WpV1eZGuARFj1xQJHIdnTuJZLP+b9R1GQ==}
     engines: {node: '>=6.0.0'}
 
   nodemon@3.0.1:
@@ -5185,6 +5189,8 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.0
 
+  '@babel/runtime@7.29.7': {}
+
   '@bramus/specificity@2.4.2':
     dependencies:
       css-tree: 3.2.1
@@ -6314,7 +6320,7 @@ snapshots:
   '@testing-library/dom@10.4.1':
     dependencies:
       '@babel/code-frame': 7.29.7
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.29.7
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
       dom-accessibility-api: 0.5.16
@@ -6589,7 +6595,7 @@ snapshots:
     dependencies:
       undici-types: 5.25.3
 
-  '@types/nodemailer@6.4.13':
+  '@types/nodemailer@8.0.0':
     dependencies:
       '@types/node': 20.8.7
 
@@ -8683,7 +8689,7 @@ snapshots:
 
   node-releases@2.0.13: {}
 
-  nodemailer@6.9.7: {}
+  nodemailer@8.0.10: {}
 
   nodemon@3.0.1:
     dependencies:
