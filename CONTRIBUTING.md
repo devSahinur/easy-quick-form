@@ -29,7 +29,7 @@ are expected to uphold it.
 
 ### Before you open a PR
 
-Please make sure your change passes the same checks CI runs:
+Please run these checks locally and make sure they pass:
 
 ```bash
 # Type-check the server
