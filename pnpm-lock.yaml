@@ -120,8 +120,8 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1
       date-fns:
-        specifier: ^2.30.0
-        version: 2.30.0
+        specifier: ^4.4.0
+        version: 4.4.0
       dayjs:
         specifier: ^1.11.10
         version: 1.11.10
@@ -139,7 +139,7 @@ importers:
         version: 6.1.1(react@18.2.0)
       react-day-picker:
         specifier: ^8.9.1
-        version: 8.9.1(date-fns@2.30.0)(react@18.2.0)
+        version: 8.9.1(date-fns@4.4.0)(react@18.2.0)
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
@@ -295,8 +295,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       date-fns:
-        specifier: ^2.30.0
-        version: 2.30.0
+        specifier: ^4.4.0
+        version: 4.4.0
       dotenv:
         specifier: ^16.3.1
         version: 16.3.1
@@ -445,6 +445,10 @@ packages:
 
   '@babel/runtime@7.23.2':
     resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/runtime@7.29.7':
+    resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
     engines: {node: '>=6.9.0'}
 
   '@bramus/specificity@2.4.2':
@@ -2513,9 +2517,8 @@ packages:
     resolution: {integrity: sha512-23XHcCF+coGYevirZceTVD7NdJOqVn+49IHyxgszm+JIiHLoB2TkmPtsYkNWT1pvRSGkc35L6NHs0yHkN2SumA==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
 
-  date-fns@2.30.0:
-    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
-    engines: {node: '>=0.11'}
+  date-fns@4.4.0:
+    resolution: {integrity: sha512-+1UMbeh68lH1SegH83CGWwpb6OHHbpSgr3+s5Eww5M4CAgswBpoWS0AjTOfEJ33HiYKz1hdj/KTFprzXHmq/6w==}
 
   dateformat@4.6.3:
     resolution: {integrity: sha512-2P0p0pFGzHS5EMnhdxQi7aJN+iMheud0UhG4dlE1DLAlvL8JHjJJTX/CSm4JXwV0Ka5nGk3zC5mcb5bUQUxxMA==}
@@ -5185,6 +5188,8 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.0
 
+  '@babel/runtime@7.29.7': {}
+
   '@bramus/specificity@2.4.2':
     dependencies:
       css-tree: 3.2.1
@@ -6314,7 +6319,7 @@ snapshots:
   '@testing-library/dom@10.4.1':
     dependencies:
       '@babel/code-frame': 7.29.7
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.29.7
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
       dom-accessibility-api: 0.5.16
@@ -7298,9 +7303,7 @@ snapshots:
     transitivePeerDependencies:
       - '@noble/hashes'
 
-  date-fns@2.30.0:
-    dependencies:
-      '@babel/runtime': 7.23.2
+  date-fns@4.4.0: {}
 
   dateformat@4.6.3: {}
 
@@ -9166,9 +9169,9 @@ snapshots:
       react: 18.2.0
       universal-cookie: 6.1.1
 
-  react-day-picker@8.9.1(date-fns@2.30.0)(react@18.2.0):
+  react-day-picker@8.9.1(date-fns@4.4.0)(react@18.2.0):
     dependencies:
-      date-fns: 2.30.0
+      date-fns: 4.4.0
       react: 18.2.0
 
   react-dom@18.2.0(react@18.2.0):
