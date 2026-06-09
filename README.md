@@ -8,43 +8,69 @@ https://eqf.sobhoy.com
 
 
 ## Installation
-You need to install [pnpm](https://pnpm.io/installation) first as pnpm workspace is used for this monorepo.
+
+This is a [pnpm workspace](https://pnpm.io/workspaces) monorepo, so you need **pnpm**.
+If you have Node 16.13+ you can enable it via Corepack (no global install needed):
+
+```bash
+corepack enable
+corepack prepare pnpm@latest --activate
+```
+
+Or install it globally:
 
 ```bash
 npm install -g pnpm
 ```
 
-Clone the project
+Clone the project and navigate into it:
 
 ```bash
 git clone https://github.com/devSahinur/easy-quick-form.git
+cd easy-quick-form
 ```
 
-then navigate into the project
-
-```
-cd form-builder
-```
-
-Now, Install the packages
+Install the packages:
 
 ```bash
 pnpm i
 ```
 
-then build the shared validation package
+Build the shared validation package (required before the first run, since both the
+client and server depend on it):
 
 ```bash
 pnpm -F @form-builder/validation build
 ```
 
-Also, create .env file with the help of .env.example file for both client and server. You can use [Brevo](https://www.brevo.com/) for free SMTP server and [MongoDB Atlas](https://www.mongodb.com/atlas/database) for database.
+Create a `.env` file for **both** `client` and `server` using their `.env.example`
+files. You can use [Brevo](https://www.brevo.com/) for a free SMTP server and
+[MongoDB Atlas](https://www.mongodb.com/atlas/database) for the database.
 
-Run the project with command
+Run the project (starts client + server together):
 
 ```bash
 pnpm dev
 ```
+
+By default the client runs on `http://localhost:4400` and the server on
+`http://localhost:8000`.
+
+## Deployment
+
+The app deploys to **Vercel as two projects from this one repo** — the Express API as
+a Serverless Function (root: `server`) and the Vite client as a static SPA
+(root: `client`). The required `vercel.json` files and the serverless entry point
+(`server/api/index.ts`) are already in the repo.
+
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for the full step-by-step guide (project
+setup, environment variables, and CORS wiring), and **[CICD.md](./CICD.md)** for the
+CI/CD workflow (automatic preview/production deploys, monorepo build optimization, and
+the GitHub Actions quality gate).
+
+> Note: profile-picture upload only works in local development — Vercel's serverless
+> filesystem is read-only/ephemeral, so disk-based image storage is disabled in
+> production (see the limitation note in DEPLOYMENT.md).
 
 <h2> Built with </h2>
 <ul>

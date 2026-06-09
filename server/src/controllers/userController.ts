@@ -39,6 +39,9 @@ export const resizeUserPhoto = (
   next: NextFunction,
 ) => {
   if (!req.file) return next();
+  // Vercel's serverless filesystem is read-only/ephemeral, so disk-based image
+  // storage is disabled there. The feature works in local dev as before.
+  if (process.env.VERCEL) return next();
   if (
     !fs.existsSync(path.join(__dirname, '..', '..', 'public', 'img', 'users'))
   )

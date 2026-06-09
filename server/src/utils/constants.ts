@@ -6,8 +6,9 @@ export const allowedOrigins = [
   'http://localhost:4400',
   'https://easyformbuilder.netlify.app',
   'https://eqf.sobhoy.com',
-
-];
+  // Deployed frontend URL (set CLIENT_URL in Vercel env, e.g. https://eqf-web.vercel.app)
+  process.env.CLIENT_URL,
+].filter(Boolean) as string[];
 
 export const accessTokenExpiresIn = '1h';
 export const refreshTokenExpiresIn = '7d';
