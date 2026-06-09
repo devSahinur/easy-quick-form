@@ -44,7 +44,7 @@
     "@tiptap/react": "^2.1.12",
     "@tiptap/starter-kit": "^2.1.12",
     "axios": "^1.5.1",
-    "cmdk": "^0.2.0",
+    "cmdk": "^1.1.1",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.10",
