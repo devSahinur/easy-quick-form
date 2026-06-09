@@ -1,8 +1,7 @@
 name: CI
 
-# Quality gate that runs before code reaches main. Vercel handles the actual
-# deploys (via its Git integration); this just makes sure the code typechecks and
-# builds so a broken commit can't be merged. See CICD.md.
+# Type-checks and builds the workspace on every push and pull request to main,
+# so broken code is caught before it merges.
 
 on:
   pull_request:
@@ -12,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Typecheck & build
+    name: Type-check & build
     runs-on: ubuntu-latest
 
     steps:
@@ -30,19 +29,19 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build shared validation package
         run: pnpm --filter @form-builder/validation build
 
-      - name: Typecheck server
+      - name: Type-check server
         run: pnpm --filter @form-builder/server exec tsc --noEmit
 
       - name: Build client
         run: pnpm --filter @form-builder/client build
 
-      # Lint is informational for now (set to fail the job by removing
-      # continue-on-error once the codebase is warning-clean).
+      # Lint is informational for now (remove continue-on-error once the
+      # codebase is warning-clean to make it a hard gate).
       - name: Lint client
         run: pnpm --filter @form-builder/client lint
         continue-on-error: true

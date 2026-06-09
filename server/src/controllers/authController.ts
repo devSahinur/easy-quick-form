@@ -6,7 +6,7 @@ import {
   registerSchema,
   resetPasswordSchema,
 } from '@form-builder/validation';
-import { sign, decode } from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 
 import User from '../models/userModel';
@@ -273,9 +273,6 @@ export const googleLogin = catchAsyncError(
       return next(
         new AppError('Failed to retrieve user data from google!', 500),
       );
-
-    const decoded = decode(tokens.id_token);
-    console.log(decoded);
 
     res.status(200).json({
       status: 'success',

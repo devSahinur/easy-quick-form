@@ -15,35 +15,38 @@ const verifyJWT = catchAsyncError(
           401,
         ),
       );
-    verify(token, process.env.ACCESS_TOKEN_SECRET!, (err, decoded) => {
-      if (err) return next(new AppError('Invalid token!', 403));
-      const { id, iat } = decoded as { id: string; iat: number };
 
-      User.findById(id).then(user => {
-        // Check if user still exists
-        if (!user)
-          return next(
-            new AppError(
-              'The user belonging to this token no longer exist.',
-              401,
-            ),
-          );
-        // Check if user changed password after the token was issued
-        if (
-          user.passwordChangedAt &&
-          user.passwordChangedAt.getTime() > iat * 1000
-        )
-          return next(
-            new AppError(
-              'User recently changed password! Please log in again',
-              401,
-            ),
-          );
-      });
+    let decoded: { id: string; iat: number };
+    try {
+      decoded = verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
+        id: string;
+        iat: number;
+      };
+    } catch {
+      return next(new AppError('Invalid token!', 403));
+    }
 
-      req.userId = id;
-      next();
-    });
+    // Await the lookup so these checks actually run before access is granted
+    // (and next() is only ever called once).
+    const user = await User.findById(decoded.id).exec();
+
+    // Check if user still exists
+    if (!user)
+      return next(
+        new AppError('The user belonging to this token no longer exist.', 401),
+      );
+
+    // Check if user changed password after the token was issued
+    if (
+      user.passwordChangedAt &&
+      user.passwordChangedAt.getTime() > decoded.iat * 1000
+    )
+      return next(
+        new AppError('User recently changed password! Please log in again', 401),
+      );
+
+    req.userId = decoded.id;
+    next();
   },
 );
 

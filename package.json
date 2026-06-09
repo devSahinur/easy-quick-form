@@ -1,15 +1,35 @@
 {
   "name": "easy-quick-form",
   "version": "1.0.0",
-  "packageManager": "pnpm@11.5.2",
+  "description": "A full-stack MERN app for building dynamic drag-and-drop forms and tracking their responses.",
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "pnpm --stream -r run dev",
     "build": "pnpm --stream -r run build",
     "preview": "pnpm --stream -r run preview"
   },
-  "keywords": [],
+  "keywords": [
+    "mern",
+    "form-builder",
+    "react",
+    "express",
+    "typescript",
+    "mongodb",
+    "drag-and-drop"
+  ],
   "author": "Sahinur Islam",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devSahinur/easy-quick-form.git"
+  },
+  "bugs": {
+    "url": "https://github.com/devSahinur/easy-quick-form/issues"
+  },
+  "homepage": "https://github.com/devSahinur/easy-quick-form#readme",
   "devDependencies": {
     "prettier": "^3.0.3"
   }

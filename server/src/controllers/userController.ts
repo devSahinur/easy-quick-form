@@ -33,42 +33,27 @@ const upload = multer({
 });
 export const uploadUserPhoto = upload.single('avatar');
 
-export const resizeUserPhoto = (
-  req: Request,
-  _res: Response,
-  next: NextFunction,
-) => {
-  if (!req.file) return next();
-  // Vercel's serverless filesystem is read-only/ephemeral, so disk-based image
-  // storage is disabled there. The feature works in local dev as before.
-  if (process.env.VERCEL) return next();
-  if (
-    !fs.existsSync(path.join(__dirname, '..', '..', 'public', 'img', 'users'))
-  )
-    fs.mkdirSync(path.join(__dirname, '..', '..', 'public', 'img', 'users'), {
-      recursive: true,
-    });
+export const resizeUserPhoto = catchAsyncError(
+  async (req: Request, _res: Response, next: NextFunction) => {
+    if (!req.file) return next();
 
-  req.file.filename = `user-${req.userId}-${Date.now()}.jpeg`;
+    const uploadDir = path.join(__dirname, '..', '..', 'public', 'img', 'users');
+    if (!fs.existsSync(uploadDir))
+      fs.mkdirSync(uploadDir, { recursive: true });
 
-  sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(
-      path.join(
-        __dirname,
-        '..',
-        '..',
-        'public',
-        'img',
-        'users',
-        req.file.filename,
-      ),
-    );
+    req.file.filename = `user-${req.userId}-${Date.now()}.jpeg`;
 
-  next();
-};
+    // Await the image write so the file exists (and any error is propagated to
+    // the error handler) before the profile update runs.
+    await sharp(req.file.buffer)
+      .resize(500, 500)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(path.join(uploadDir, req.file.filename));
+
+    next();
+  },
+);
 
 export const changePassword = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {

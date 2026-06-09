@@ -6,7 +6,7 @@ export const allowedOrigins = [
   'http://localhost:4400',
   'https://easyformbuilder.netlify.app',
   'https://eqf.sobhoy.com',
-  // Deployed frontend URL (set CLIENT_URL in Vercel env, e.g. https://eqf-web.vercel.app)
+  // Deployed frontend URL — set the CLIENT_URL env var to your production origin.
   process.env.CLIENT_URL,
 ].filter(Boolean) as string[];
 
